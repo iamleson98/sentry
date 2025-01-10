@@ -49,7 +49,7 @@ export function IssueViewQueryCount({view}: IssueViewQueryCountProps) {
     isError,
   } = useFetchIssueCounts({
     orgSlug: organization.slug,
-    query: [view.unsavedChanges ? view.unsavedChanges[0] : view.query],
+    query: [view.unsavedChanges?.query ?? view.query],
     project: pageFilters.selection.projects,
     environment: pageFilters.selection.environments,
     ...constructCountTimeFrame(pageFilters.selection.datetime),
@@ -59,13 +59,11 @@ export function IssueViewQueryCount({view}: IssueViewQueryCountProps) {
     // Only update the count once the query has finished fetching
     // This preserves the previous count while the query is fetching a new one
     if (queryCount && !isFetching) {
-      setCount(
-        queryCount?.[view.unsavedChanges ? view.unsavedChanges[0] : view.query] ?? 0
-      );
+      setCount(queryCount?.[view.unsavedChanges?.query ?? view.query] ?? 0);
     } else if (isError) {
       setCount(0);
     }
-  }, [queryCount, isFetching, isError, view.query, view.unsavedChanges]);
+  }, [queryCount, isFetching, isError, view.unsavedChanges?.query, view.query]);
 
   return (
     <QueryCountBubble
